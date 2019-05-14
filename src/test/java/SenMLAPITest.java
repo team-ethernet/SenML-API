@@ -34,6 +34,17 @@ public class SenMLAPITest {
             }
 
             @Test
+            public void getRecords() throws IOException {
+                final String inputjson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false},{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"}]";
+                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJsonDecode(inputjson);
+
+                final String record1 = "{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false}";
+                final String record2 = "{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"}";
+
+                assertEquals(Arrays.asList(record1, record2), senMLAPI.getRecords());
+            }
+
+            @Test
             public void addAndGetValue() {
                 final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJsonEncode();
 
@@ -195,6 +206,17 @@ public class SenMLAPITest {
 
                 assertEquals(record1, senMLAPI.getRecord(0));
                 assertEquals(record2, senMLAPI.getRecord(1));
+            }
+
+            @Test
+            public void getRecords() throws IOException {
+                final String cborData = "82BF62626E766D61633A75726E3A6465763A33323930333239303332646276657200FFBF62626E756D61633A75726E3A6465763A3332393033323934326276736568656C6C6F627574FB403E000000000000FF";
+                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCborDecode(hexStringToByteArray(cborData));
+
+                final String record1 = "BF62626E766D61633A75726E3A6465763A33323930333239303332646276657200FF";
+                final String record2 = "BF62626E756D61633A75726E3A6465763A3332393033323934326276736568656C6C6F627574FB403E000000000000FF";
+
+                assertEquals(Arrays.asList(record1, record2), senMLAPI.getRecords());
             }
 
             @Test

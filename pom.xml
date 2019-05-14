@@ -6,7 +6,9 @@
     <groupId>org.teamethernet.senmlapi</groupId>
     <artifactId>java-senml-api</artifactId>
     <version>1.0</version>
-	
+    <name>SenML API</name>
+    <description>SenML API for encoding and decoding JSON and CBOR</description>
+
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -25,8 +27,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <name>SenML API</name>
-    <description>SenML API for encoding and decoding JSON and CBOR</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -46,12 +46,12 @@
             </plugin>
         </plugins>
     </build>
-	
-	<distributionManagement>
-    <repository>
-        <id>internal</id>
-        <url>file://C:\Users\anton_bothin\Desktop\SenML_API\target/mvn-repo</url>
-    </repository>
-</distributionManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>internal</id>
+            <url>file://${project.build.directory}/mvn-repo</url>
+        </repository>
+    </distributionManagement>
 
 </project>

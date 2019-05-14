@@ -50,6 +50,16 @@ class SenMLAPI<T extends Formatter> {
         return new SenMLAPI<>(new CborFormatter(buffer));
     }
 
+    List<String> getRecords() throws IOException {
+        final List<String> records = new ArrayList<>();
+
+        for (int i = 0; i < formatter.getRecords().size(); i++) {
+            records.add(getRecord(i));
+        }
+
+        return records;
+    }
+
     String getRecord(final int recordIndex) throws IOException {
         return formatter.getSenML(formatter.getRecords().get(recordIndex));
     }
