@@ -6,6 +6,7 @@
     <groupId>org.teamethernet.senmlapi</groupId>
     <artifactId>java-senml-api</artifactId>
     <version>1.0</version>
+	
     <dependencies>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -45,5 +46,12 @@
             </plugin>
         </plugins>
     </build>
+	
+	<distributionManagement>
+    <repository>
+        <id>internal</id>
+        <url>file://C:\Users\anton_bothin\Desktop\SenML_API\target/mvn-repo</url>
+    </repository>
+</distributionManagement>
 
 </project>
