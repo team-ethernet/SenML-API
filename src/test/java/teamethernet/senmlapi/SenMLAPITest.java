@@ -1,7 +1,13 @@
+package teamethernet.senmlapi;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
+import teamethernet.senmlapi.CborFormatter;
+import teamethernet.senmlapi.JsonFormatter;
+import teamethernet.senmlapi.Label;
+import teamethernet.senmlapi.SenMLAPI;
 
 import java.io.IOException;
 import java.util.Arrays;
