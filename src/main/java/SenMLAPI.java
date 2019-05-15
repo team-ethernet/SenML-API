@@ -8,21 +8,6 @@ import java.util.List;
 
 class SenMLAPI<T extends Formatter> {
 
-    public static void main(String[] args) throws IOException {
-        SenMLAPI senMLAPI = SenMLAPI.initCborDecode(new byte[]{-127, -94, 98, 98, 110, 112, 109, 97, 99, 58, 117, 114, 110, 58, 100, 101, 118, 58, 49, 50, 51, 52, 97, 118, -7, 79, -128});
-
-        System.out.println(senMLAPI.getValue(Label.VALUE, 0));
-    }
-
-    private static byte[] hexStringToByteArray(String s) {
-        byte[] data = new byte[s.length() / 2];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = (byte) ((Character.digit(s.charAt(i * 2), 16) << 4)
-                    + Character.digit(s.charAt(i * 2 + 1), 16));
-        }
-        return data;
-    }
-
     private static final String STRING_INSTANCE = "";
     private static final Double DOUBLE_INSTANCE = 0.0;
     private static final Integer INTEGER_INSTANCE = 0;
