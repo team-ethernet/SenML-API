@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.teamethernet</groupId>
+    <groupId>team-ethernet</groupId>
     <artifactId>senml-api</artifactId>
-    <version>1.0</version>
+    <version>1.0.2</version>
     <name>SenML API</name>
     <description>SenML API for encoding and decoding JSON and CBOR</description>
 
@@ -65,6 +65,7 @@
                 <configuration>
                     <message>Maven artifacts for ${project.version}</message>
                     <noJekyll>true</noJekyll>
+					<merge>true</merge>
                     <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
                     <branch>refs/heads/mvn-repo</branch>
                     <includes><include>**/*</include></includes>
