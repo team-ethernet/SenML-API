@@ -3,9 +3,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.teamethernet</groupId>
+    <groupId>teamethernet</groupId>
     <artifactId>senml-api</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
     <name>SenML API</name>
     <description>SenML API for encoding and decoding JSON and CBOR</description>
 
