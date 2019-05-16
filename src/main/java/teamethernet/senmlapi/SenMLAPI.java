@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-class SenMLAPI<T extends Formatter> {
+public class SenMLAPI<T extends Formatter> {
 
     private static final String STRING_INSTANCE = "";
     private static final Double DOUBLE_INSTANCE = 0.0;
@@ -21,23 +21,23 @@ class SenMLAPI<T extends Formatter> {
         this.formatter = formatter;
     }
 
-    static SenMLAPI<JsonFormatter> initJsonEncode() {
+    public static SenMLAPI<JsonFormatter> initJsonEncode() {
         return new SenMLAPI<>(new JsonFormatter());
     }
 
-    static SenMLAPI<CborFormatter> initCborEncode() {
+    public static SenMLAPI<CborFormatter> initCborEncode() {
         return new SenMLAPI<>(new CborFormatter());
     }
 
-    static SenMLAPI<JsonFormatter> initJsonDecode(final String buffer) throws IOException {
+    public static SenMLAPI<JsonFormatter> initJsonDecode(final String buffer) throws IOException {
         return new SenMLAPI<>(new JsonFormatter(buffer));
     }
 
-    static SenMLAPI<CborFormatter> initCborDecode(final byte[] buffer) throws IOException {
+    public static SenMLAPI<CborFormatter> initCborDecode(final byte[] buffer) throws IOException {
         return new SenMLAPI<>(new CborFormatter(buffer));
     }
 
-    List<String> getRecords() throws IOException {
+    public List<String> getRecords() throws IOException {
         final List<String> records = new ArrayList<>();
 
         for (int i = 0; i < formatter.getRecords().size(); i++) {
@@ -47,11 +47,11 @@ class SenMLAPI<T extends Formatter> {
         return records;
     }
 
-    String getRecord(final int recordIndex) throws IOException {
+    public String getRecord(final int recordIndex) throws IOException {
         return formatter.getSenML(formatter.getRecords().get(recordIndex));
     }
 
-    List<Label> getLabels(final int recordIndex) {
+    public List<Label> getLabels(final int recordIndex) {
         final JsonNode record = formatter.getRecords().get(recordIndex);
         final List<Label> labels = new ArrayList<>();
 
@@ -61,7 +61,7 @@ class SenMLAPI<T extends Formatter> {
     }
 
     @SuppressWarnings("unchecked")
-    <S> S getValue(Label<S> label, int recordIndex) {
+    public <S> S getValue(Label<S> label, int recordIndex) {
         final Class<S> type = label.getClassType();
         final JsonNode record = formatter.getRecords().get(recordIndex);
 
@@ -79,7 +79,7 @@ class SenMLAPI<T extends Formatter> {
         }
     }
 
-    final void addRecord(final Label.Pair ... pairs) {
+    public final void addRecord(final Label.Pair ... pairs) {
         final JsonNode record = formatter.getMapper().createObjectNode();
 
         for (final Label.Pair pair : pairs) {
@@ -102,7 +102,7 @@ class SenMLAPI<T extends Formatter> {
         ((ArrayNode) formatter.getRecords()).add(record);
     }
 
-    String getSenML() throws IOException {
+    public String getSenML() throws IOException {
         return formatter.getSenML(formatter.getRecords());
     }
 

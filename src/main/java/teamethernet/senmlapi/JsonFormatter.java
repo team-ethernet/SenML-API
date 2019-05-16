@@ -7,17 +7,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
-public class JsonFormatter implements Formatter {
+class JsonFormatter implements Formatter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper(new JsonFactory());
 
     private final JsonNode RECORDS;
 
-    public JsonFormatter() {
+    JsonFormatter() {
         RECORDS = MAPPER.createArrayNode();
     }
 
-    public JsonFormatter(final String jsonString) throws IOException {
+    JsonFormatter(final String jsonString) throws IOException {
         RECORDS = MAPPER.readTree(jsonString);
     }
 

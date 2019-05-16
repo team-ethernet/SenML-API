@@ -6,17 +6,17 @@ import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 
 import java.io.IOException;
 
-public class CborFormatter implements Formatter {
+class CborFormatter implements Formatter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper(new CBORFactory());
 
     private final JsonNode RECORDS;
 
-    public CborFormatter() {
+    CborFormatter() {
         RECORDS = MAPPER.createArrayNode();
     }
 
-    public CborFormatter(final byte[] cborData) throws IOException {
+    CborFormatter(final byte[] cborData) throws IOException {
         RECORDS = MAPPER.readValue(cborData, JsonNode.class);
     }
 
