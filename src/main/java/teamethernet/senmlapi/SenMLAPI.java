@@ -55,7 +55,8 @@ public class SenMLAPI<T extends Formatter> {
         final JsonNode record = formatter.getRecords().get(recordIndex);
         final List<Label> labels = new ArrayList<>();
 
-        record.fields().forEachRemaining(field -> labels.add(Label.NAME_TO_VALUE_MAP.get(field.getKey())));
+        record.fields().forEachRemaining(field ->
+                labels.add(Label.getNameToValueMap(formatter.getClass()).get(field.getKey())));
 
         return labels;
     }
@@ -86,13 +87,13 @@ public class SenMLAPI<T extends Formatter> {
             final Class<?> type = pair.getLabel().getClassType();
 
             if (type.isInstance(STRING_INSTANCE)) {
-                ((ObjectNode) record).put(pair.getLabel().toString(), (String) pair.getValue());
+                ((ObjectNode) record).put(pair.getLabel().getFormattedLabel(formatter.getClass()), (String) pair.getValue());
             } else if (type.isInstance(DOUBLE_INSTANCE)) {
-                ((ObjectNode) record).put(pair.getLabel().toString(), (Double) pair.getValue());
+                ((ObjectNode) record).put(pair.getLabel().getFormattedLabel(formatter.getClass()), (Double) pair.getValue());
             } else if (type.isInstance(INTEGER_INSTANCE)) {
-                ((ObjectNode) record).put(pair.getLabel().toString(), (Integer) pair.getValue());
+                ((ObjectNode) record).put(pair.getLabel().getFormattedLabel(formatter.getClass()), (Integer) pair.getValue());
             } else if (type.isInstance(BOOLEAN_INSTANCE)) {
-                ((ObjectNode) record).put(pair.getLabel().toString(), (Boolean) pair.getValue());
+                ((ObjectNode) record).put(pair.getLabel().getFormattedLabel(formatter.getClass()), (Boolean) pair.getValue());
             } else {
                 throw new UnsupportedOperationException(
                         type + " is not supported. Use String, Double, Integer or Boolean");

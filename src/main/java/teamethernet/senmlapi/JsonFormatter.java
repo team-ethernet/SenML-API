@@ -30,19 +30,19 @@ public class JsonFormatter implements Formatter {
     }
 
     public String getStringValue(Label<String> label, JsonNode record) {
-        return record.get(label.toString()).asText();
+        return record.get(label.getFormattedLabel(this.getClass())).asText();
     }
 
     public Integer getIntegerValue(Label<Integer> label, JsonNode record) {
-        return record.get(label.toString()).intValue();
+        return record.get(label.getFormattedLabel(this.getClass())).intValue();
     }
 
     public Double getDoubleValue(Label<Double> label, JsonNode record) {
-        return record.get(label.toString()).doubleValue();
+        return record.get(label.getFormattedLabel(this.getClass())).doubleValue();
     }
 
     public Boolean getBooleanValue(Label<Boolean> label, JsonNode record) {
-        return record.get(label.toString()).booleanValue();
+        return record.get(label.getFormattedLabel(this.getClass())).booleanValue();
     }
 
     public String getSenML(final JsonNode rootNode) throws JsonProcessingException {
