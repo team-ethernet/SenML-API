@@ -101,6 +101,7 @@ SenMLAPI#getLabels(int);
 ## Example usage
 
 ### Encoding
+#### JSON
 ```java
 SenMLAPI senMLAPI = SenMLAPI.initJsonEncode();
 senMLAPI.addRecord(Label.BASE_NAME.attachValue("name"), Label.BASE_UNIT.attachValue("unit"), Label.VALUE.attachValue(4.6));
@@ -114,6 +115,7 @@ Should print
 [{"bn":"name","bu":"unit","v":4.6},{"n":"current","u":"A","v":1.2}]
 ```
 
+#### CBOR
 ```java
 SenMLAPI senMLAPI = SenMLAPI.initCborEncode();
 senMLAPI.addRecord(Label.BASE_NAME.attachValue("name"), Label.BASE_UNIT.attachValue("unit"), Label.VALUE.attachValue(4.6));
@@ -128,6 +130,7 @@ Should print
 ```
 
 ### Decoding
+#### JSON
 ```java
 String sampleJson = "[{\"bn\":\"mac:urn:dev:1234\", \"v\": 30.0}]";
 SenMLAPI senMLAPI = SenMLAPI.initJsonDecode(sampleJson);
@@ -140,6 +143,7 @@ Should print
 30.0
 ```
 
+#### CBOR
 ```java
 byte[] sampleCbor = new byte[]{-127, -94, 98, 98, 110, 112, 109, 97, 99, 58, 117, 114, 110, 58, 100, 101, 118, 58, 49, 50, 51, 52, 97, 118, -7, 79, -128};
 SenMLAPI senMLAPI = SenMLAPI.initCborDecode(sampleCbor);
