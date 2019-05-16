@@ -3,7 +3,7 @@ package teamethernet.senmlapi;
 import java.util.HashMap;
 import java.util.Map;
 
-abstract class Label<T> {
+public abstract class Label<T> {
 
     private final Class<T> type;
     private final String stringRepresentation;
@@ -17,7 +17,7 @@ abstract class Label<T> {
         return type;
     }
 
-    Pair attachValue(final T value) {
+    public Pair attachValue(final T value) {
         return new Pair(value);
     }
 
@@ -26,35 +26,35 @@ abstract class Label<T> {
         return stringRepresentation;
     }
 
-    final static Label<String> BASE_NAME = new Label<String>(String.class, "bn") {
+    public final static Label<String> BASE_NAME = new Label<String>(String.class, "bn") {
     };
-    final static Label<Double> BASE_TIME = new Label<Double>(Double.class, "bt") {
+    public final static Label<Double> BASE_TIME = new Label<Double>(Double.class, "bt") {
     };
-    final static Label<String> BASE_UNIT = new Label<String>(String.class, "bu") {
+    public final static Label<String> BASE_UNIT = new Label<String>(String.class, "bu") {
     };
-    final static Label<Double> BASE_VALUE = new Label<Double>(Double.class, "bv") {
+    public final static Label<Double> BASE_VALUE = new Label<Double>(Double.class, "bv") {
     };
-    final static Label<Double> BASE_SUM = new Label<Double>(Double.class, "bs") {
+    public final static Label<Double> BASE_SUM = new Label<Double>(Double.class, "bs") {
     };
-    final static Label<Integer> BASE_VERSION = new Label<Integer>(Integer.class, "bver") {
+    public final static Label<Integer> BASE_VERSION = new Label<Integer>(Integer.class, "bver") {
     };
-    final static Label<String> NAME = new Label<String>(String.class, "n") {
+    public final static Label<String> NAME = new Label<String>(String.class, "n") {
     };
-    final static Label<String> UNIT = new Label<String>(String.class, "u") {
+    public final static Label<String> UNIT = new Label<String>(String.class, "u") {
     };
-    final static Label<Double> VALUE = new Label<Double>(Double.class, "v") {
+    public final static Label<Double> VALUE = new Label<Double>(Double.class, "v") {
     };
-    final static Label<String> STRING_VALUE = new Label<String>(String.class, "vs") {
+    public final static Label<String> STRING_VALUE = new Label<String>(String.class, "vs") {
     };
-    final static Label<Boolean> BOOLEAN_VALUE = new Label<Boolean>(Boolean.class, "vb") {
+    public final static Label<Boolean> BOOLEAN_VALUE = new Label<Boolean>(Boolean.class, "vb") {
     };
-    final static Label<String> DATA_VALUE = new Label<String>(String.class, "vd") {
+    public final static Label<String> DATA_VALUE = new Label<String>(String.class, "vd") {
     };
-    final static Label<Double> SUM = new Label<Double>(Double.class, "s") {
+    public final static Label<Double> SUM = new Label<Double>(Double.class, "s") {
     };
-    final static Label<Double> TIME = new Label<Double>(Double.class, "t") {
+    public final static Label<Double> TIME = new Label<Double>(Double.class, "t") {
     };
-    final static Label<Double> UPDATE_TIME = new Label<Double>(Double.class, "ut") {
+    public final static Label<Double> UPDATE_TIME = new Label<Double>(Double.class, "ut") {
     };
 
     final static Map<String, Label> NAME_TO_VALUE_MAP = new HashMap<String, Label>() {{
@@ -83,7 +83,7 @@ abstract class Label<T> {
             this.value = value;
         }
 
-        Label<T> getLabel() {
+        public Label<T> getLabel() {
             return Label.this;
         }
 
