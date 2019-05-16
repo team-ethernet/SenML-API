@@ -6,7 +6,7 @@ import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 
 import java.io.IOException;
 
-class CborFormatter implements Formatter {
+public class CborFormatter implements Formatter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper(new CBORFactory());
 

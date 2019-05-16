@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
-class JsonFormatter implements Formatter {
+public class JsonFormatter implements Formatter {
 
     private static final ObjectMapper MAPPER = new ObjectMapper(new JsonFactory());
 
