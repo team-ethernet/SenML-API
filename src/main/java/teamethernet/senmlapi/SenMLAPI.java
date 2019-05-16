@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class SenMLAPI<T extends Formatter> {
@@ -21,24 +23,24 @@ public class SenMLAPI<T extends Formatter> {
         this.formatter = formatter;
     }
 
-    public static SenMLAPI<JsonFormatter> initJsonEncode() {
+    public static SenMLAPI<JsonFormatter> initJson() {
         return new SenMLAPI<>(new JsonFormatter());
     }
 
-    public static SenMLAPI<CborFormatter> initCborEncode() {
-        return new SenMLAPI<>(new CborFormatter());
-    }
-
-    public static SenMLAPI<JsonFormatter> initJsonDecode(final String buffer) throws IOException {
+    public static SenMLAPI<JsonFormatter> initJson(final byte[] buffer) throws IOException {
         return new SenMLAPI<>(new JsonFormatter(buffer));
     }
 
-    public static SenMLAPI<CborFormatter> initCborDecode(final byte[] buffer) throws IOException {
+    public static SenMLAPI<CborFormatter> initCbor() {
+        return new SenMLAPI<>(new CborFormatter());
+    }
+
+    public static SenMLAPI<CborFormatter> initCbor(final byte[] buffer) throws IOException {
         return new SenMLAPI<>(new CborFormatter(buffer));
     }
 
-    public List<String> getRecords() throws IOException {
-        final List<String> records = new ArrayList<>();
+    public List<byte[]> getRecords() throws IOException {
+        final List<byte[]> records = new ArrayList<>();
 
         for (int i = 0; i < formatter.getRecords().size(); i++) {
             records.add(getRecord(i));
@@ -47,7 +49,7 @@ public class SenMLAPI<T extends Formatter> {
         return records;
     }
 
-    public String getRecord(final int recordIndex) throws IOException {
+    public byte[] getRecord(final int recordIndex) throws IOException {
         return formatter.getSenML(formatter.getRecords().get(recordIndex));
     }
 
@@ -80,6 +82,8 @@ public class SenMLAPI<T extends Formatter> {
         }
     }
 
+    //TODO: addRecord for encoded byte array
+
     public final void addRecord(final Label.Pair ... pairs) {
         final JsonNode record = formatter.getMapper().createObjectNode();
 
@@ -103,7 +107,7 @@ public class SenMLAPI<T extends Formatter> {
         ((ArrayNode) formatter.getRecords()).add(record);
     }
 
-    public String getSenML() throws IOException {
+    public byte[] getSenML() throws IOException {
         return formatter.getSenML(formatter.getRecords());
     }
 

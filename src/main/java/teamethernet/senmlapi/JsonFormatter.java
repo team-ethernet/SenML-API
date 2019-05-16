@@ -17,8 +17,8 @@ public class JsonFormatter implements Formatter {
         RECORDS = MAPPER.createArrayNode();
     }
 
-    JsonFormatter(final String jsonString) throws IOException {
-        RECORDS = MAPPER.readTree(jsonString);
+    JsonFormatter(final byte[] jsonData) throws IOException {
+        RECORDS = MAPPER.readTree(jsonData);
     }
 
     public ObjectMapper getMapper() {
@@ -45,8 +45,8 @@ public class JsonFormatter implements Formatter {
         return record.get(label.getFormattedLabel(this.getClass())).booleanValue();
     }
 
-    public String getSenML(final JsonNode rootNode) throws JsonProcessingException {
-        return MAPPER.writeValueAsString(rootNode);
+    public byte[] getSenML(final JsonNode rootNode) throws JsonProcessingException {
+        return MAPPER.writeValueAsBytes(rootNode);
     }
 
 }

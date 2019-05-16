@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class CborFormatter implements Formatter {
 
@@ -44,19 +45,8 @@ public class CborFormatter implements Formatter {
         return record.get(label.getFormattedLabel(this.getClass())).booleanValue();
     }
 
-    public String getSenML(final JsonNode rootNode) throws IOException {
-        final byte[] bytes = MAPPER.writeValueAsBytes(rootNode);
-
-        return byteArrayToHexString(bytes);
-    }
-
-    private String byteArrayToHexString (final byte[] bytes) {
-        final StringBuilder stringBuilder = new StringBuilder();
-        for (byte b : bytes) {
-            stringBuilder.append(String.format("%02X", b));
-        }
-
-        return stringBuilder.toString();
+    public byte[] getSenML(final JsonNode rootNode) throws IOException {
+        return MAPPER.writeValueAsBytes(rootNode);
     }
 
 }

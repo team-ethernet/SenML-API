@@ -4,18 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
-import teamethernet.senmlapi.CborFormatter;
-import teamethernet.senmlapi.JsonFormatter;
-import teamethernet.senmlapi.Label;
-import teamethernet.senmlapi.SenMLAPI;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 @RunWith(Enclosed.class)
 public class SenMLAPITest {
@@ -29,30 +25,33 @@ public class SenMLAPITest {
 
             @Test
             public void getRecord() throws IOException {
-                final String inputjson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false},{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"}]";
-                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJsonDecode(inputjson);
+                final String inputJson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false},{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"}]";
+                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJson(inputJson.getBytes());
 
-                final String record1 = "{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false}";
-                final String record2 = "{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"}";
+                final byte[] record1 = "{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false}".getBytes();
+                final byte[] record2 = "{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"}".getBytes();
 
-                assertEquals(record1, senMLAPI.getRecord(0));
-                assertEquals(record2, senMLAPI.getRecord(1));
+                assertArrayEquals(record1, senMLAPI.getRecord(0));
+                assertArrayEquals(record2, senMLAPI.getRecord(1));
             }
 
             @Test
             public void getRecords() throws IOException {
-                final String inputjson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false},{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"}]";
-                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJsonDecode(inputjson);
+                final String inputJson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false},{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"}]";
+                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJson(inputJson.getBytes());
 
-                final String record1 = "{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false}";
-                final String record2 = "{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"}";
+                final byte[] record1 = "{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false}".getBytes();
+                final byte[] record2 = "{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"}".getBytes();
 
-                assertEquals(Arrays.asList(record1, record2), senMLAPI.getRecords());
+                final List<byte[]> records = senMLAPI.getRecords();
+                assertEquals(2, records.size());
+                assertArrayEquals(record1, records.get(0));
+                assertArrayEquals(record2, records.get(1));
             }
 
             @Test
             public void addAndGetValue() {
-                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJsonEncode();
+                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJson();
 
                 final Label.Pair bn1Pair = Label.BASE_NAME.attachValue("hello1");
                 final Label.Pair v1Pair = Label.VALUE.attachValue(30.0);
@@ -85,12 +84,12 @@ public class SenMLAPITest {
 
             @Before
             public void setUp() {
-                senMLAPI = SenMLAPI.initJsonEncode();
+                senMLAPI = SenMLAPI.initJson();
             }
 
             @Test
             public void empty() throws IOException {
-                assertEquals("[]", senMLAPI.getSenML());
+                assertArrayEquals("[]".getBytes(), senMLAPI.getSenML());
             }
 
             @Test
@@ -103,7 +102,7 @@ public class SenMLAPITest {
                 senMLAPI.addRecord(bn, v, vb, u);
 
                 final String expected = "[{\"bn\":\"mac:urn:dev:3290329032\",\"v\":30.0,\"vb\":false,\"u\":\"dB\"}]";
-                assertEquals(expected, senMLAPI.getSenML());
+                assertArrayEquals(expected.getBytes(), senMLAPI.getSenML());
             }
 
             @Test
@@ -120,7 +119,7 @@ public class SenMLAPITest {
                 senMLAPI.addRecord(bn2, vs, ut);
 
                 final String expected = "[{\"bn\":\"mac:urn:dev:3290329032\",\"bver\":0},{\"bn\":\"mac:urn:dev:329032942\",\"vs\":\"hello\",\"ut\":30.0}]";
-                assertEquals(expected, senMLAPI.getSenML());
+                assertArrayEquals(expected.getBytes(), senMLAPI.getSenML());
             }
 
         }
@@ -129,15 +128,15 @@ public class SenMLAPITest {
 
             @Test
             public void empty() throws IOException {
-                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJsonDecode("[]");
+                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJson("[]".getBytes());
 
-                assertEquals("[]", senMLAPI.getSenML());
+                assertArrayEquals("[]".getBytes(), senMLAPI.getSenML());
             }
 
             @Test
             public void manyParameters() throws IOException {
-                final String inputjson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false}]";
-                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJsonDecode(inputjson);
+                final String inputJson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false}]";
+                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJson(inputJson.getBytes());
 
                 final String bn = senMLAPI.getValue(Label.BASE_NAME, 0);
                 final double v = senMLAPI.getValue(Label.VALUE, 0);
@@ -150,8 +149,8 @@ public class SenMLAPITest {
 
             @Test
             public void multipleRecords() throws IOException {
-                final String inputjson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false},{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"},{\"s\":3040.201}]";
-                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJsonDecode(inputjson);
+                final String inputJson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false},{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"},{\"s\":3040.201}]";
+                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJson(inputJson.getBytes());
 
                 final String bn1 = senMLAPI.getValue(Label.BASE_NAME, 0);
 
@@ -174,8 +173,8 @@ public class SenMLAPITest {
 
             @Test
             public void allLabels() throws IOException {
-                final String inputjson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false},{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"},{\"s\":3040.201}]";
-                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJsonDecode(inputjson);
+                final String inputJson = "[{\"bn\":\"mac:urn:dev:3290\",\"v\":30.0,\"vb\":false},{\"bn\":\"hello\",\"ut\":0.01,\"bt\":0.0,\"bu\":\"Watt\"},{\"s\":3040.201}]";
+                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJson(inputJson.getBytes());
 
                 final List<Label> labels0Expected = Arrays.asList(Label.BASE_NAME, Label.VALUE, Label.BOOLEAN_VALUE);
                 final List labels0 = senMLAPI.getLabels(0);
@@ -205,29 +204,32 @@ public class SenMLAPITest {
             @Test
             public void getRecord() throws IOException {
                 final String cborData = "82BF62626E766D61633A75726E3A6465763A33323930333239303332646276657200FFBF62626E756D61633A75726E3A6465763A3332393033323934326276736568656C6C6F627574FB403E000000000000FF";
-                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCborDecode(hexStringToByteArray(cborData));
+                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCbor(hexStringToByteArray(cborData));
 
                 final String record1 = "BF62626E766D61633A75726E3A6465763A33323930333239303332646276657200FF";
                 final String record2 = "BF62626E756D61633A75726E3A6465763A3332393033323934326276736568656C6C6F627574FB403E000000000000FF";
 
-                assertEquals(record1, senMLAPI.getRecord(0));
-                assertEquals(record2, senMLAPI.getRecord(1));
+                assertArrayEquals(hexStringToByteArray(record1), senMLAPI.getRecord(0));
+                assertArrayEquals(hexStringToByteArray(record2), senMLAPI.getRecord(1));
             }
 
             @Test
             public void getRecords() throws IOException {
                 final String cborData = "82BF62626E766D61633A75726E3A6465763A33323930333239303332646276657200FFBF62626E756D61633A75726E3A6465763A3332393033323934326276736568656C6C6F627574FB403E000000000000FF";
-                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCborDecode(hexStringToByteArray(cborData));
+                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCbor(hexStringToByteArray(cborData));
 
                 final String record1 = "BF62626E766D61633A75726E3A6465763A33323930333239303332646276657200FF";
                 final String record2 = "BF62626E756D61633A75726E3A6465763A3332393033323934326276736568656C6C6F627574FB403E000000000000FF";
 
-                assertEquals(Arrays.asList(record1, record2), senMLAPI.getRecords());
+                final List<byte[]> records = senMLAPI.getRecords();
+                assertEquals(2, records.size());
+                assertArrayEquals(hexStringToByteArray(record1), records.get(0));
+                assertArrayEquals(hexStringToByteArray(record2), records.get(1));
             }
 
             @Test
             public void addAndGetValue() {
-                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCborEncode();
+                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCbor();
 
                 final Label.Pair bn1Pair = Label.BASE_NAME.attachValue("hello1");
                 final Label.Pair v1Pair = Label.VALUE.attachValue(30.0);
@@ -260,12 +262,12 @@ public class SenMLAPITest {
 
             @Before
             public void setUp() {
-                senMLAPI = SenMLAPI.initCborEncode();
+                senMLAPI = SenMLAPI.initCbor();
             }
 
             @Test
             public void empty() throws IOException {
-                assertEquals("80", senMLAPI.getSenML());
+                assertArrayEquals(hexStringToByteArray("80"), senMLAPI.getSenML());
             }
 
             @Test
@@ -278,7 +280,7 @@ public class SenMLAPITest {
                 senMLAPI.addRecord(bn, v, vb, u);
 
                 final String expected = "81BF622D32766D61633A75726E3A6465763A333239303332393033326132FB403E0000000000006134F46131626442FF";
-                assertEquals(expected, senMLAPI.getSenML());
+                assertArrayEquals(hexStringToByteArray(expected), senMLAPI.getSenML());
             }
 
             @Test
@@ -295,7 +297,7 @@ public class SenMLAPITest {
                 senMLAPI.addRecord(bn2, vs, ut);
 
                 final String expected = "82BF622D32766D61633A75726E3A6465763A33323930333239303332622D3100FFBF622D32756D61633A75726E3A6465763A33323930333239343261336568656C6C6F6137FB403E000000000000FF";
-                assertEquals(expected, senMLAPI.getSenML());
+                assertArrayEquals(hexStringToByteArray(expected), senMLAPI.getSenML());
             }
 
         }
@@ -304,15 +306,15 @@ public class SenMLAPITest {
 
             @Test
             public void empty() throws IOException {
-                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCborDecode(hexStringToByteArray("80"));
+                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCbor(hexStringToByteArray("80"));
 
-                assertEquals("80", senMLAPI.getSenML());
+                assertArrayEquals(hexStringToByteArray("80"), senMLAPI.getSenML());
             }
 
             @Test
             public void manyParameters() throws IOException {
                 final String cborData = "81A4622D32766D61633A75726E3A6465763A333239303332393033326132F94F806134F46131626442";
-                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCborDecode(hexStringToByteArray(cborData));
+                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCbor(hexStringToByteArray(cborData));
 
                 String bn = senMLAPI.getValue(Label.BASE_NAME, 0);
                 boolean vb = senMLAPI.getValue(Label.BOOLEAN_VALUE, 0);
@@ -324,7 +326,7 @@ public class SenMLAPITest {
             @Test
             public void multipleRecords() throws Exception {
                 final String cborData = "82A2622D32766D61633A75726E3A6465763A33323930333239303332622D3100A3622D32756D61633A75726E3A6465763A33323930333239343261336568656C6C6F6137F94F80";
-                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCborDecode(hexStringToByteArray(cborData));
+                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCbor(hexStringToByteArray(cborData));
 
                 final String bn1 = senMLAPI.getValue(Label.BASE_NAME, 0);
                 final int bver1 = senMLAPI.getValue(Label.BASE_VERSION, 0);
@@ -344,7 +346,7 @@ public class SenMLAPITest {
             @Test
             public void allLabels() throws IOException {
                 final String cborData = "83A3622D32706D61633A75726E3A6465763A333239306132F94F806134F4A4622D326568656C6C6F6137FB3F847AE147AE147B622D33F90000622D346457617474A16135FB40A7C066E978D4FE";
-                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCborDecode(hexStringToByteArray(cborData));
+                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCbor(hexStringToByteArray(cborData));
 
                 final List<Label> labels0Expected = Arrays.asList(Label.BASE_NAME, Label.VALUE, Label.BOOLEAN_VALUE);
                 final List labels0 = senMLAPI.getLabels(0);
