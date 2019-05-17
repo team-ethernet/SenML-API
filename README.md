@@ -2,28 +2,50 @@
 The senml app is an API for encoding and decoding SenML messages in JSON or CBOR format.  
 It handles the formatting of the SenML pack conforming to [RFC 8428](https://tools.ietf.org/html/rfc8428).
 
+## Maven Dependencies
+
+To use the API on a Maven project, include the following in your `pom.xml` file:
+```
+<repositories>
+  <repository>
+    <id>SenML_API-mvn-repo</id>
+    <url>https://github.com/team-ethernet/SenML_API/raw/mvn-repo</url>
+    <releases>
+      <enabled>true</enabled>
+    </releases>
+    <snapshots>
+      <enabled>true</enabled>
+      <updatePolicy>always</updatePolicy>
+    </snapshots>
+  </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>team-ethernet</groupId>
+    <artifactId>senml-api</artifactId>
+    <version>1.3.0</version>
+  </dependency>
+<dependencies>
+```
+
 ## Project code needs
 
 ### Dependencies
-Jackson API for JSON and CBOR
+* [Jackson Databind](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind/2.9.8)
+* [Jackson Dataformat: CBOR](https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.9.8)
+* [JUnit](https://mvnrepository.com/artifact/junit/junit)
+
+## Build
+After having made changes to the API
+1. Update the version number in `pom.xml`
+2. Run `mvn clean deploy` to merge the new version into the mvn-repo branch
 
 ## Use
 
 The API is used through the methods 
 
-`SenMLAPI.initJsonEncode`, `SenMLAPI.initCborEncode`, `SenMLAPI#addRecord`,`SenMLAPI#getSenML` for encoding 
-
-and 
-
-`SenMLAPI.initJsonDecode`, `SenMLAPI.initCborDecode`, `SenMLAPI#getValue`, `SenMLAPI#getRecord`, `SenMLAPI#getRecords`, `SenMLAPI#getLabels` for decoding
-
-The `SenMLAPI#getValue` method takes a `Label` and an index as arguments.
-
-The `SenMLAPI#getRecord` method takes an index as arguments.
-
-The `SenMLAPI#getLabels` takes an index as an argument.
-
-The `SenMLAPI#addRecord` method takes `Label.Pair ...` as arguments.
+`SenMLAPI.initJson()`, `SenMLAPI.initJson(byte[])`, `SenMLAPI.initCbor()`, `SenMLAPI.initCbor(byte[])`, `SenMLAPI#addRecord(Label.Pair, ...)`, `SenMLAPI#addRecord(byte[])`, `SenMLAPI#getSenML()`, `SenMLAPI#getValue(Label, int)`, `SenMLAPI#getRecord(int)`, `SenMLAPI#getRecords()`, `SenMLAPI#getLabels(int)`, `Label<T>#attachValue(T)` and `Label#getFormattedLabel(Class<T extends Formatter>)`
 
 The supported labels are:
 
@@ -47,55 +69,54 @@ The supported labels are:
 
 ### Methods
 
-#### Encoding
+```java
+// Creates and begins a new empty SenML message in JSON format
+SenMLAPI SenMLAPI.initJson();
 
-```java
-// Creates and begins new SenML message in JSON format
-SenMLAPI.initJsonEncode();
-```
-```java
-// Creates and begins new SenML message in CBOR format
-SenMLAPI.initCborEncode();
-```
-```java
+// Creates and begins a SenML message from the byte stream in JSON format
+SenMLAPI SenMLAPI.initJson(byte[]);
+
+// Creates and begins new empty SenML message in CBOR format
+SenMLAPI SenMLAPI.initCbor();
+
+// Creates and begins a SenML message from the byte stream in CBOR format
+SenMLAPI SenMLAPI.initCbor(byte[]);
+
 // Adds a record with the given fields
 // For example 
-// SenMLAPI#addRecord(new Pair<>(Label.BASE_NAME, "name"), new Pair<>(Label.BASE_UNIT, "unit"), new Pair<>(Label.VALUE, 4.6))
+// SenMLAPI#addRecord(Label.BASE_NAME.attachValue("name"), Label.BASE_UNIT.attachValue("unit"), Label.VALUE.attachValue(4.6))
 // adds a record with the fields bn = name, bu = unit, v = 4.6
-SenMLAPI#addRecord(...);
-```
-```java
-// Ends the SenML message, returns a String
-SenMLAPI#getSenML();
-```
+void SenMLAPI#addRecord(Label.Pair, ...);
 
-#### Decoding
-```java
-// Specify what JSON message that you want to decode
-SenMLAPI.initJsonDecode(String);
-```
-```java
-// Specify what CBOR message that you want to decode
-SenMLAPI.initCborDecode(byteArray);
-```
-```java
+// Adds a record from the encoded JSON/CBOR message
+// For example 
+// SenMLAPI#addRecord("{"bn":"name","bu":"unit","v":4.6}".getBytes())
+// adds a record with the fields bn = name, bu = unit, v = 4.6
+void SenMLAPI#addRecord(byte[]);
+
+// Returns the encoded SenML message
+byte[] SenMLAPI#getSenML();
+
 // Get the value for the given label at the given record index
 // For example 
 // String = SenMLAPI#getValue(Label.BASE_NAME, 0)
 // Returns the base name for the first record.
-SenMLAPI#getValue(Label, int);
-```
-```java
+T SenMLAPI#getValue(Label<T>, int);
+
 // Returns the record that exist at the given record index
-SenMLAPI#getRecord(int);
-```
-```java
+byte[] SenMLAPI#getRecord(int);
+
 // Returns a List of all records that exist
-SenMLAPI#getRecords();
-```
-```java
+List<byte[]> SenMLAPI#getRecords();
+
 // Returns a List of all Labels that exist at the given record index
-SenMLAPI#getLabels(int);
+List<Label> SenMLAPI#getLabels(int);
+
+// Returns a Label-Value Pair that is used in the SenMLAPI#addRecord method
+Label.Pair Label<T>#attachValue(T)
+
+// Returns the label as how it is encoded in the JSON/CBOR message
+String Label#getFormattedLabel(Class<S extends Formatter>)
 ```
 
 ## Example usage
@@ -103,12 +124,12 @@ SenMLAPI#getLabels(int);
 ### Encoding
 #### JSON
 ```java
-SenMLAPI senMLAPI = SenMLAPI.initJsonEncode();
+SenMLAPI senMLAPI = SenMLAPI.initJson();
 senMLAPI.addRecord(Label.BASE_NAME.attachValue("name"), Label.BASE_UNIT.attachValue("unit"), Label.VALUE.attachValue(4.6));
 senMLAPI.addRecord(Label.NAME.attachValue("current"), Label.UNIT.attachValue("A"), Label.VALUE.attachValue(1.2));
-String json = senMLAPI.getSenML();
+byte[] json = senMLAPI.getSenML();
 
-System.out.println(json);
+System.out.println(new String(json));
 ```
 Should print
 ```json
@@ -117,23 +138,23 @@ Should print
 
 #### CBOR
 ```java
-SenMLAPI senMLAPI = SenMLAPI.initCborEncode();
+SenMLAPI senMLAPI = SenMLAPI.initCbor();
 senMLAPI.addRecord(Label.BASE_NAME.attachValue("name"), Label.BASE_UNIT.attachValue("unit"), Label.VALUE.attachValue(4.6));
 senMLAPI.addRecord(Label.NAME.attachValue("current"), Label.UNIT.attachValue("A"), Label.VALUE.attachValue(1.2));
-String cbor = senMLAPI.getSenML();
+byte[] cbor = senMLAPI.getSenML();
 
-System.out.println(cbor);
+System.out.println(new String(cbor));
 ```
 Should print
 ```cbor
-82BF62626E646E616D6562627564756E69746176FB4012666666666666FFBF616E6763757272656E74617561416176FB3FF3333333333333FF
+��b-2dnameb-4dunita2�@ffffff��a0gcurrenta1aAa2�?�333333�
 ```
 
 ### Decoding
 #### JSON
 ```java
 String sampleJson = "[{\"bn\":\"mac:urn:dev:1234\", \"v\": 30.0}]";
-SenMLAPI senMLAPI = SenMLAPI.initJsonDecode(sampleJson);
+SenMLAPI senMLAPI = SenMLAPI.initJson(sampleJson.getBytes());
 double v = senMLAPI.getValue(Label.VALUE, 0);
 
 System.out.println(v);
@@ -146,7 +167,7 @@ Should print
 #### CBOR
 ```java
 byte[] sampleCbor = new byte[]{-127, -94, 98, 98, 110, 112, 109, 97, 99, 58, 117, 114, 110, 58, 100, 101, 118, 58, 49, 50, 51, 52, 97, 118, -7, 79, -128};
-SenMLAPI senMLAPI = SenMLAPI.initCborDecode(sampleCbor);
+SenMLAPI senMLAPI = SenMLAPI.initCbor(sampleCbor);
 double v = senMLAPI.getValue(Label.VALUE, 0);
 
 System.out.println(v);
