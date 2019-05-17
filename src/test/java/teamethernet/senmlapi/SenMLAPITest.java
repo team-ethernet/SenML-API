@@ -50,30 +50,33 @@ public class SenMLAPITest {
             }
 
             @Test
-            public void addAndGetValue() {
-                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJson();
-
-                final Label.Pair bn1Pair = Label.BASE_NAME.attachValue("hello1");
-                final Label.Pair v1Pair = Label.VALUE.attachValue(30.0);
-
-                senMLAPI.addRecord(bn1Pair, v1Pair);
+            public void addAndGetValue() throws IOException {
+                final String inputJson = "[{\"bn\":\"hello1\",\"v\":30.0}]";
+                final SenMLAPI<JsonFormatter> senMLAPI = SenMLAPI.initJson(inputJson.getBytes());
 
                 final Label.Pair bn2Pair = Label.BASE_NAME.attachValue("hello2");
                 final Label.Pair v2Pair = Label.VALUE.attachValue(20.0);
-
                 senMLAPI.addRecord(bn2Pair, v2Pair);
+
+                final byte[] record3 = "{\"bn\":\"hello3\",\"v\":35.0,\"vb\":false}".getBytes();
+                senMLAPI.addRecord(record3);
 
                 final String bn1 = senMLAPI.getValue(Label.BASE_NAME, 0);
                 final double v1 = senMLAPI.getValue(Label.VALUE, 0);
-
                 assertEquals("hello1", bn1);
                 assertEquals(30.0, v1, EPSILON);
 
                 final String bn2 = senMLAPI.getValue(Label.BASE_NAME, 1);
                 final double v2 = senMLAPI.getValue(Label.VALUE, 1);
-
                 assertEquals("hello2", bn2);
                 assertEquals(20.0, v2, EPSILON);
+
+                final String bn3 = senMLAPI.getValue(Label.BASE_NAME, 2);
+                final double v3 = senMLAPI.getValue(Label.VALUE, 2);
+                final boolean vb3 = senMLAPI.getValue(Label.BOOLEAN_VALUE, 2);
+                assertEquals("hello3", bn3);
+                assertEquals(35.0, v3, EPSILON);
+                assertFalse(vb3);
             }
 
         }
@@ -228,30 +231,31 @@ public class SenMLAPITest {
             }
 
             @Test
-            public void addAndGetValue() {
-                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCbor();
-
-                final Label.Pair bn1Pair = Label.BASE_NAME.attachValue("hello1");
-                final Label.Pair v1Pair = Label.VALUE.attachValue(30.0);
-
-                senMLAPI.addRecord(bn1Pair, v1Pair);
+            public void addAndGetValue() throws IOException {
+                final String cborData = "81A2622D326668656C6C6F316132F94F80";
+                final SenMLAPI<CborFormatter> senMLAPI = SenMLAPI.initCbor(hexStringToByteArray(cborData));
 
                 final Label.Pair bn2Pair = Label.BASE_NAME.attachValue("hello2");
                 final Label.Pair v2Pair = Label.VALUE.attachValue(20.0);
-
                 senMLAPI.addRecord(bn2Pair, v2Pair);
+
+                final String record3 = "A2622D32766D61633A75726E3A6465763A33323930333239303332622D3100";
+                senMLAPI.addRecord(record3.getBytes());
 
                 final String bn1 = senMLAPI.getValue(Label.BASE_NAME, 0);
                 final double v1 = senMLAPI.getValue(Label.VALUE, 0);
-
                 assertEquals("hello1", bn1);
                 assertEquals(30.0, v1, EPSILON);
 
                 final String bn2 = senMLAPI.getValue(Label.BASE_NAME, 1);
                 final double v2 = senMLAPI.getValue(Label.VALUE, 1);
-
                 assertEquals("hello2", bn2);
                 assertEquals(20.0, v2, EPSILON);
+
+                final String bn3 = senMLAPI.getValue(Label.BASE_NAME, 2);
+                final int bver3 = senMLAPI.getValue(Label.BASE_VERSION, 2);
+                assertEquals("mac:urn:dev:3290329032", bn3);
+                assertEquals(0, bver3);
             }
 
         }

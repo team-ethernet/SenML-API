@@ -82,7 +82,9 @@ public class SenMLAPI<T extends Formatter> {
         }
     }
 
-    //TODO: addRecord for encoded byte array
+    public void addRecord(final byte[] record) throws IOException {
+        formatter.addRecord(record);
+    }
 
     public final void addRecord(final Label.Pair ... pairs) {
         final JsonNode record = formatter.getMapper().createObjectNode();

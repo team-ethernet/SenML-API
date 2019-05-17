@@ -19,6 +19,8 @@ interface Formatter {
 
     Boolean getBooleanValue(Label<Boolean> label, JsonNode record);
 
-    byte[] getSenML(final JsonNode rootNode) throws IOException;
+    void addRecord(byte[] data) throws IOException;
+
+    byte[] getSenML(JsonNode rootNode) throws IOException;
 
 }

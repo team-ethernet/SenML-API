@@ -2,6 +2,7 @@ package teamethernet.senmlapi;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 
 import java.io.IOException;
@@ -43,6 +44,11 @@ public class CborFormatter implements Formatter {
 
     public Boolean getBooleanValue(Label<Boolean> label, JsonNode record) {
         return record.get(label.getFormattedLabel(this.getClass())).booleanValue();
+    }
+
+    public void addRecord(final byte[] cborData) throws IOException {
+        final JsonNode record = MAPPER.readValue(cborData, JsonNode.class);
+        ((ArrayNode) RECORDS).add(record);
     }
 
     public byte[] getSenML(final JsonNode rootNode) throws IOException {
