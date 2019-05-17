@@ -277,7 +277,7 @@ public class SenMLAPITest {
                 senMLAPI.addRecord(bn2Pair, v2Pair);
 
                 final String record3 = "A2622D32766D61633A75726E3A6465763A33323930333239303332622D3100";
-                senMLAPI.addRecord(record3.getBytes());
+                senMLAPI.addRecord(hexStringToByteArray(record3));
 
                 final String bn1 = senMLAPI.getValue(Label.BASE_NAME, 0);
                 final double v1 = senMLAPI.getValue(Label.VALUE, 0);
