@@ -36,6 +36,11 @@ To use the API on a Maven project, include the following in your `pom.xml` file:
 * [Jackson Dataformat: CBOR](https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-cbor/2.9.8)
 * [JUnit](https://mvnrepository.com/artifact/junit/junit)
 
+## Build
+After having made changes to the API
+1. Update the version number in `pom.xml`
+2. Run `mvn clean deploy` to merge the new version into the mvn-repo branch
+
 ## Use
 
 The API is used through the methods 
